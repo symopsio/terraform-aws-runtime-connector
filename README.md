@@ -23,22 +23,22 @@ module "runtime_connector" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.7 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws_kinesis_data_stream"></a> [aws\_kinesis\_data\_stream](#module\_aws\_kinesis\_data\_stream) | symopsio/kinesis-data-stream-addon/sym | >= 1.0.0 |
-| <a name="module_aws_kinesis_firehose"></a> [aws\_kinesis\_firehose](#module\_aws\_kinesis\_firehose) | symopsio/kinesis-firehose-addon/sym | >= 1.0.0 |
-| <a name="module_aws_secretsmgr"></a> [aws\_secretsmgr](#module\_aws\_secretsmgr) | symopsio/secretsmgr-addon/sym | >= 1.0.0 |
+| <a name="module_aws_kinesis_data_stream"></a> [aws\_kinesis\_data\_stream](#module\_aws\_kinesis\_data\_stream) | symopsio/kinesis-data-stream-addon/aws | >= 1.0.0 |
+| <a name="module_aws_kinesis_firehose"></a> [aws\_kinesis\_firehose](#module\_aws\_kinesis\_firehose) | symopsio/kinesis-firehose-addon/aws | >= 1.0.0 |
+| <a name="module_aws_secretsmgr"></a> [aws\_secretsmgr](#module\_aws\_secretsmgr) | symopsio/secretsmgr-addon/aws | >= 1.0.0 |
 
 ## Resources
 
