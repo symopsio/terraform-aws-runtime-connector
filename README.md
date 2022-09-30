@@ -10,7 +10,7 @@ The role created for the Runtime uses an [External ID](https://docs.aws.amazon.c
 
 ```hcl
 module "runtime_connector" {
-  source  = "symopsio/runtime-connector/sym"
+  source  = "symopsio/runtime-connector/aws"
   version = ">= 1.0.0"
 
   environment = "sandbox"
