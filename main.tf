@@ -51,6 +51,8 @@ resource "aws_iam_policy" "assume_roles" {
     }]
     Version = "2012-10-17"
   })
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "extra_policy_attachments" {
