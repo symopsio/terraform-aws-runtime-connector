@@ -5,27 +5,37 @@ locals {
   target_resources = [for acct in local.target_accts : "arn:aws:iam::${acct}:role/sym/*"]
 
   external_id = trimspace(var.custom_external_id) == "" ? random_uuid.external_id.result : var.custom_external_id
+  role_name = "SymRuntime${title(var.environment)}"
 }
 
 resource "random_uuid" "external_id" {}
 
 resource "aws_iam_role" "this" {
-  name = "SymRuntime${title(var.environment)}"
+  name = local.role_name
   path = "/sym/"
 
   assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        AWS = var.sym_account_ids
-      }
-      Condition = {
-        StringEquals = {
-          "sts:ExternalId" = local.external_id
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.sym_account_ids
+        }
+        Condition = {
+          StringEquals = {
+            "sts:ExternalId" = local.external_id
+          }
+        }
+      },
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/${local.role_name}"]
         }
       }
-    }]
+    ]
     Version = "2012-10-17"
   })
 
@@ -39,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "assume_roles_attach" {
 
 # Allow the runtime to assume roles in the /sym/ path in safelisted accounts
 resource "aws_iam_policy" "assume_roles" {
-  name = "SymRuntime${title(var.environment)}"
+  name = local.role_name
   path = "/sym/"
 
   description = "Base permissions for the Sym runtime"
