@@ -20,12 +20,19 @@ resource "aws_iam_role" "this" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          AWS = concat(var.sym_account_ids, ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.role_name}"])
+          AWS = var.sym_account_ids
         }
         Condition = {
           StringEquals = {
             "sts:ExternalId" = local.external_id
           }
+        }
+      },
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/${local.role_name}"]
         }
       }
     ]
