@@ -5,7 +5,7 @@ locals {
   target_resources = [for acct in local.target_accts : "arn:aws:iam::${acct}:role/sym/*"]
 
   external_id = trimspace(var.custom_external_id) == "" ? random_uuid.external_id.result : var.custom_external_id
-  role_name = "SymRuntime${title(var.environment)}"
+  role_name   = "SymRuntime${title(var.environment)}"
 }
 
 resource "random_uuid" "external_id" {}
@@ -28,11 +28,20 @@ resource "aws_iam_role" "this" {
           }
         }
       },
+      # Allow for role self-assumption due to Sym engine internals.
+      # Initial provisioning of the role fails if we specify the role ARN as a
+      # resource, so using a PrincipalArn condition as suggested here:
+      # https://aws.amazon.com/premiumsupport/knowledge-center/iam-trust-policy-error/
       {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          AWS = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/${local.role_name}"]
+          AWS = ["*"] # This is constrained by the PrincipalArn condition to only the current role
+        }
+        Condition = {
+          StringEquals = {
+            "aws:PrincipalArn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/${local.role_name}"
+          }
         }
       }
     ]
