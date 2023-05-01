@@ -1,16 +1,19 @@
-data "aws_caller_identity" "current" {}
-
 locals {
-  target_accts     = concat([data.aws_caller_identity.current.account_id], var.account_id_safelist)
-  target_resources = [for acct in local.target_accts : "arn:aws:iam::${acct}:role/sym/*"]
-
-  external_id = trimspace(var.custom_external_id) == "" ? random_uuid.external_id.result : var.custom_external_id
-  role_name   = "SymRuntime${title(var.environment)}"
+  role_name  = "SymRuntime${title(var.environment_name)}"
 }
 
+# A data source to read the effective Account ID, User ID, and ARN in which Terraform is authorized.
+data "aws_caller_identity" "current" {}
+
+# A data source to read the effective AWS region in which Terraform is authorized.
+data "aws_region" "current" {}
+
+# A random UUID that will be used as the External ID in the aws_iam_role.sym_runtime_connector_role's Assume Role Policy
 resource "random_uuid" "external_id" {}
 
-resource "aws_iam_role" "this" {
+# This is the role that the Sym Runtime will assume in your AWS account to perform actions such as
+# reading secrets from AWS Secrets Manager.
+resource "aws_iam_role" "sym_runtime_connector_role" {
   name = local.role_name
   path = "/sym/"
 
@@ -20,11 +23,12 @@ resource "aws_iam_role" "this" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          AWS = var.sym_account_ids
+          AWS = [var.sym_account_id]
         }
         Condition = {
           StringEquals = {
-            "sts:ExternalId" = local.external_id
+            # This role can only be assumed if Sym provides this specific UUID as the External ID.
+            "sts:ExternalId" = random_uuid.external_id.result
           }
         }
       },
@@ -51,22 +55,16 @@ resource "aws_iam_role" "this" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "assume_roles_attach" {
-  policy_arn = aws_iam_policy.assume_roles.arn
-  role       = aws_iam_role.this.name
-}
-
-# Allow the runtime to assume roles in the /sym/ path in safelisted accounts
 resource "aws_iam_policy" "assume_roles" {
   name = local.role_name
   path = "/sym/"
 
-  description = "Base permissions for the Sym runtime"
+  description = "These are base permissions required for the Sym Runtime to perform any actions in your AWS account. This policy allows the Sym Runtime to assume roles in the /sym/ path in safelisted accounts."
   policy = jsonencode({
     Statement = [{
       Action   = "sts:AssumeRole"
       Effect   = "Allow"
-      Resource = local.target_resources
+      Resource = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/*"]
     }]
     Version = "2012-10-17"
   })
@@ -74,82 +72,32 @@ resource "aws_iam_policy" "assume_roles" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "extra_policy_attachments" {
-  for_each = var.policy_arns
-
-  policy_arn = each.value
-  role       = aws_iam_role.this.name
+resource "aws_iam_role_policy_attachment" "attach_assume_roles" {
+  policy_arn = aws_iam_policy.assume_roles.arn
+  role       = aws_iam_role.sym_runtime_connector_role.name
 }
 
-locals {
-  aws_secrets_mgr_count         = contains(var.addons, "aws/secretsmgr") ? 1 : 0
-  aws_kinesis_firehose_count    = contains(var.addons, "aws/kinesis-firehose") ? 1 : 0
-  aws_kinesis_data_stream_count = contains(var.addons, "aws/kinesis-data-stream") ? 1 : 0
-}
+# An Integration that tells the Sym Runtime which AWS Role to assume to perform actions in your AWS account.
+resource "sym_integration" "runtime_context" {
+  type = "permission_context"
+  name = "${var.environment_name}-runtime-context"
 
-locals {
-  secrets_mgr_defaults = {
-    "tag_name"  = "SymEnv",
-    "tag_value" = var.environment
+  # This tells Sym which AWS account the IAM Role is in.
+  # It is different from settings.external_id below, which is the AWS-specific external_id.
+  external_id = data.aws_caller_identity.current.account_id
+
+  settings = {
+    cloud       = "aws"
+    region      = data.aws_region.current.name
+    role_arn    = aws_iam_role.sym_runtime_connector_role.arn
+    external_id = random_uuid.external_id.result
+    account_id  = data.aws_caller_identity.current.account_id
   }
-  secrets_mgr_addons = lookup(var.addon_params, "aws/secretsmgr", {})
-  secrets_mgr_vars   = merge(local.secrets_mgr_defaults, local.secrets_mgr_addons)
 }
 
-# aws/secretsmgr addon ########################################################
-module "aws_secretsmgr" {
-  count = local.aws_secrets_mgr_count
+resource "sym_runtime" "this" {
+  name = var.environment_name
 
-  source  = "symopsio/secretsmgr-addon/aws"
-  version = ">= 1.0.0"
-
-  environment = local.secrets_mgr_vars["tag_value"]
-  tag_name    = local.secrets_mgr_vars["tag_name"]
-  tags        = var.tags
-}
-
-resource "aws_iam_role_policy_attachment" "aws_secretsmgr_attach" {
-  count = local.aws_secrets_mgr_count
-
-  policy_arn = module.aws_secretsmgr[0].policy_arn
-  role       = aws_iam_role.this.name
-}
-
-# aws/kinesis-firehose addon ##################################################
-
-module "aws_kinesis_firehose" {
-  count = local.aws_kinesis_firehose_count
-
-  source  = "symopsio/kinesis-firehose-addon/aws"
-  version = ">= 1.0.0"
-
-  environment = var.environment
-  tags        = var.tags
-}
-
-resource "aws_iam_role_policy_attachment" "aws_kinesis_firehose_attach" {
-  count = local.aws_kinesis_firehose_count
-
-  policy_arn = module.aws_kinesis_firehose[0].policy_arn
-  role       = aws_iam_role.this.name
-}
-
-# aws/kinesis-data-stream addon ###############################################
-
-module "aws_kinesis_data_stream" {
-  count = local.aws_kinesis_data_stream_count
-
-  source  = "symopsio/kinesis-data-stream-addon/aws"
-  version = ">= 1.0.0"
-
-  environment = var.environment
-  tags        = var.tags
-  stream_arns = var.addon_params["aws/kinesis-data-stream"]["stream_arns"]
-}
-
-resource "aws_iam_role_policy_attachment" "aws_kinesis_data_stream_attach" {
-  count = local.aws_kinesis_data_stream_count
-
-  policy_arn = module.aws_kinesis_data_stream[0].policy_arn
-  role       = aws_iam_role.this.name
+  # Give the Sym Runtime the permissions defined by the runtime_context resource.
+  context_id = sym_integration.runtime_context.id
 }
