@@ -1,5 +1,5 @@
 locals {
-  role_name  = "SymRuntime${title(var.environment_name)}"
+  role_name = "SymRuntime${title(var.environment_name)}"
 }
 
 # A data source to read the effective Account ID, User ID, and ARN in which Terraform is authorized.
