@@ -59,7 +59,7 @@ resource "aws_iam_policy" "assume_roles" {
   name = local.role_name
   path = "/sym/"
 
-  description = "These are base permissions required for the Sym Runtime to perform any actions in your AWS account. This policy allows the Sym Runtime to assume roles in the /sym/ path in safelisted accounts."
+  description = "These are base permissions required for the Sym Runtime to perform any actions in your AWS account. This policy allows the Sym Runtime to assume roles in the /sym/ path in the current AWS account."
   policy = jsonencode({
     Statement = [{
       Action   = "sts:AssumeRole"
