@@ -1,19 +1,18 @@
 # runtime-connector
 
-The `runtime-connector` module provisions the IAM role that a Sym Runtime uses to execute a Flow.
+The `runtime-connector` module provisions the AWS IAM role that a Sym Runtime uses to execute a Flow.
 
-This `Connector` will provision a single IAM role for the Sym Runtime to use at execution time.
+By default, this Sym Runtime Role has permissions to assume additional roles that have a path that begins with `/sym/`,
+and only within a provided safelist of AWS accounts. The Runtime always includes the current AWS account in the safelist.
 
-By default, the Runtime only has permissions to assume roles that have a path that begins with `/sym/`, and only within a provided safelist of AWS accounts. The Runtime always includes the current AWS account in the safelist.
-
-The role created for the Runtime uses an [External ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html), a best practice for invoking cross-account roles. This module will generate an External ID for you, unless you configure the `custom_external_id` to override it.
+The role created for the Runtime uses an [External ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_common-scenarios_third-party.html), a best practice for invoking cross-account roles.
 
 ```hcl
 module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
-  version = ">= 1.0.0"
+  version = ">= 2.0.0"
 
-  environment = "sandbox"
+  environment_name = "sandbox"
 }
 ```
 
@@ -55,6 +54,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_account_id_safelist"></a> [account\_id\_safelist](#input\_account\_id\_safelist) | List of additional AWS account IDs (beyond the current AWS account) that the Sym Runtime Role can assume roles in. (e.g. The SSO Management Account ID) | `list(string)` | `[]` | no |
 | <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The unique name of the environment in which you are deploying this Sym Runtime Role. (e.g. staging, or prod) | `string` | n/a | yes |
 | <a name="input_sym_account_id"></a> [sym\_account\_id](#input\_sym\_account\_id) | The AWS account ID that can assume the Sym Runtime Role. Defaults to the Sym Production AWS account ID. | `string` | `"803477428605"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags to apply to the AWS resources | `map(string)` | `{}` | no |

@@ -1,6 +1,6 @@
 output "sym_runtime_connector_role" {
   description = "An [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) resource. This AWS IAM Role will be assumed by the Sym Runtime to execute operations in your AWS account."
-  value = aws_iam_role.sym_runtime_connector_role
+  value       = aws_iam_role.sym_runtime_connector_role
 }
 
 output "sym_integration" {

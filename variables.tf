@@ -14,3 +14,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "account_id_safelist" {
+  description = "List of additional AWS account IDs (beyond the current AWS account) that the Sym Runtime Role can assume roles in. (e.g. The SSO Management Account ID)"
+  type        = list(string)
+  default     = []
+}

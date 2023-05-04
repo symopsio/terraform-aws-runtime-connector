@@ -1,5 +1,11 @@
 locals {
   role_name = "SymRuntime${title(var.environment_name)}"
+
+  # Variables to generate a list of AWS IAM Roles that the Sym Runtime Role can assume.
+  # The Sym Runtime Role can assume roles in the /sym/ path in the current AWS account and all accounts specified in the
+  # account_id_safelist input variable.
+  accessible_account_ids = concat([data.aws_caller_identity.current.account_id], var.account_id_safelist)
+  assumable_role_arns    = [for acct in local.accessible_account_ids : "arn:aws:iam::${acct}:role/sym/*"]
 }
 
 # A data source to read the effective Account ID, User ID, and ARN in which Terraform is authorized.
@@ -59,12 +65,12 @@ resource "aws_iam_policy" "assume_roles" {
   name = local.role_name
   path = "/sym/"
 
-  description = "These are base permissions required for the Sym Runtime to perform any actions in your AWS account. This policy allows the Sym Runtime to assume roles in the /sym/ path in the current AWS account."
+  description = "These are base permissions required for the Sym Runtime to perform any actions in your AWS account. This policy allows the Sym Runtime to assume roles in the /sym/ path in the current AWS account and any AWS accounts specified in the account_id_safelist."
   policy = jsonencode({
     Statement = [{
       Action   = "sts:AssumeRole"
       Effect   = "Allow"
-      Resource = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/*"]
+      Resource = local.assumable_role_arns
     }]
     Version = "2012-10-17"
   })
