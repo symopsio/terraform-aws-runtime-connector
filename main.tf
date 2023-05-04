@@ -1,5 +1,5 @@
 locals {
-  role_name = "SymRuntime${title(var.environment_name)}"
+  role_name = "SymRuntime${title(var.environment)}"
 
   # Variables to generate a list of AWS IAM Roles that the Sym Runtime Role can assume.
   # The Sym Runtime Role can assume roles in the /sym/ path in the current AWS account and all accounts specified in the
@@ -86,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "attach_assume_roles" {
 # An Integration that tells the Sym Runtime which AWS Role to assume to perform actions in your AWS account.
 resource "sym_integration" "runtime_context" {
   type = "permission_context"
-  name = "${var.environment_name}-runtime-context"
+  name = "${var.environment}-runtime-context"
 
   # This tells Sym which AWS account the IAM Role is in.
   # It is different from settings.external_id below, which is the AWS-specific external_id.
@@ -102,7 +102,7 @@ resource "sym_integration" "runtime_context" {
 }
 
 resource "sym_runtime" "this" {
-  name = var.environment_name
+  name = var.environment
 
   # Give the Sym Runtime the permissions defined by the runtime_context resource.
   context_id = sym_integration.runtime_context.id

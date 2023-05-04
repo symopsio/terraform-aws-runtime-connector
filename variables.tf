@@ -1,4 +1,4 @@
-variable "environment_name" {
+variable "environment" {
   description = "The unique name of the environment in which you are deploying this Sym Runtime Role. (e.g. staging, or prod)"
   type        = string
 }

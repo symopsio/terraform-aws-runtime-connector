@@ -55,7 +55,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_id_safelist"></a> [account\_id\_safelist](#input\_account\_id\_safelist) | List of additional AWS account IDs (beyond the current AWS account) that the Sym Runtime Role can assume roles in. (e.g. The SSO Management Account ID) | `list(string)` | `[]` | no |
-| <a name="input_environment_name"></a> [environment\_name](#input\_environment\_name) | The unique name of the environment in which you are deploying this Sym Runtime Role. (e.g. staging, or prod) | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | The unique name of the environment in which you are deploying this Sym Runtime Role. (e.g. staging, or prod) | `string` | n/a | yes |
 | <a name="input_sym_account_id"></a> [sym\_account\_id](#input\_sym\_account\_id) | The AWS account ID that can assume the Sym Runtime Role. Defaults to the Sym Production AWS account ID. | `string` | `"803477428605"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags to apply to the AWS resources | `map(string)` | `{}` | no |
 
