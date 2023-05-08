@@ -12,7 +12,7 @@ module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
   version = ">= 2.0.0"
 
-  environment_name = "sandbox"
+  environment = "sandbox"
 }
 ```
 
