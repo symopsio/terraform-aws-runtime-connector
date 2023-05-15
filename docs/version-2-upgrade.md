@@ -11,18 +11,17 @@ Version 2.0.0 of the Runtime Connector Module a major release and includes some 
 
 Upgrade topics:
 
-<!-- TOC depthFrom:2 depthTo:2 -->
-
 - [Runtime Connector Module Version 2 Upgrade Guide](#runtime-connector-module-version-2-upgrade-guide)
   - [Module Version Configuration](#module-version-configuration)
   - [Removed Inputs: `addons` and `addon_params`](#removed-inputs-addons-and-addonparams)
+    - [Refactoring the aws/secretsmgr Addon](#refactoring-the-awssecretsmgr-addon) 
+    - [Refactoring the aws/kinesis-firehose Addon](#refactoring-the-awskinesis-firehose-addon) 
+    - [Refactoring the aws/kinesis-data-stream Addon](#refactoring-the-awskinesis-data-stream-addon) 
   - [Removed Input: `custom_external_id`](#removed-input-customexternalid)
   - [Removed Output: `account_id`](#removed-output-accountid)
   - [Removed Output: `settings`](#removed-output-settings)
   - [New output: `sym_integration`](#new-output-symintegration)
   - [New output: `sym_runtime`](#new-output-symintegration)
-
-<!-- /TOC -->
 
 ## Module Version Configuration
 It is recommended to use [version constraints when configuring Terraform providers](https://www.terraform.io/docs/configuration/providers.html#provider-versions). 
@@ -96,7 +95,7 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.module.aws_secretsmgr.aws_iam_policy.this[0]
+    from = module.runtime_connector.module.aws_secretsmgr[0].aws_iam_policy.this
     to   = module.secrets_manager_access.aws_iam_policy.this  
 }  
   
