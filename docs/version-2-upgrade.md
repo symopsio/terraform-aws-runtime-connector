@@ -107,7 +107,7 @@ moved {
 ```
 
 ### Refactoring the `aws/kinesis-firehose` Addon
-if `aws/kinesis-firehose` is declared as an addon, update your configuration to add the `symopsio/kinesis-firehose-addon/aws` module explicitly.
+If `aws/kinesis-firehose` is declared as an addon, update your configuration to add the `symopsio/kinesis-firehose-addon/aws` module explicitly.
 
 For example, given this previous configuration:
 ```terraform
@@ -156,7 +156,7 @@ moved {
 ```
 
 ### Refactoring the `aws/kinesis-data-stream` Addon
-if `aws/kinesis-data-stream` is declared as an addon, update your configuration to add the `symopsio/kinesis-data-stream-addon/aws` module explicitly.
+If `aws/kinesis-data-stream` is declared as an addon, update your configuration to add the `symopsio/kinesis-data-stream-addon/aws` module explicitly.
 
 For example, given this previous configuration:
 ```terraform
