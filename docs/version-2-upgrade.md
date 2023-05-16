@@ -95,14 +95,14 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.module.aws_secretsmgr[0].aws_iam_policy.this
-    to   = module.secrets_manager_access.aws_iam_policy.this  
+  from = module.runtime_connector.module.aws_secretsmgr[0].aws_iam_policy.this
+  to   = module.secrets_manager_access.aws_iam_policy.this  
 }  
   
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.aws_iam_role_policy_attachment.aws_secretsmgr_attach[0]
-    to   = module.secrets_manager_access.aws_iam_role_policy_attachment.attach_secrets_manager_access[0]  
+  from = module.runtime_connector.aws_iam_role_policy_attachment.aws_secretsmgr_attach[0]
+  to   = module.secrets_manager_access.aws_iam_role_policy_attachment.attach_secrets_manager_access[0]  
 }
 ```
 
@@ -144,14 +144,14 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.module.aws_kinesis_firehose[0].aws_iam_policy.this
-    to   = module.kinesis_firehose_access.aws_iam_policy.this  
+  from = module.runtime_connector.module.aws_kinesis_firehose[0].aws_iam_policy.this
+  to   = module.kinesis_firehose_access.aws_iam_policy.this  
 }  
   
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_firehose_attach[0]
-    to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.attach_firehose_access[0]  
+  from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_firehose_attach[0]
+  to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.attach_firehose_access[0]  
 }
 ```
 
@@ -199,14 +199,14 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.module.aws_kinesis_data_stream[0].aws_iam_policy.this
-    to   = module.kinesis_data_stream_access.aws_iam_policy.this  
+  from = module.runtime_connector.module.aws_kinesis_data_stream[0].aws_iam_policy.this
+  to   = module.kinesis_data_stream_access.aws_iam_policy.this  
 }  
   
 # This block may be removed after applying the updated configuration
 moved {  
-    from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_data_stream_attach[0]
-    to   = module.kinesis_data_stream_access.aws_iam_role_policy_attachment.attach_datastream_access[0]  
+  from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_data_stream_attach[0]
+  to   = module.kinesis_data_stream_access.aws_iam_role_policy_attachment.attach_datastream_access[0]  
 }
 ```
 
@@ -309,8 +309,8 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = sym_integration.runtime_context  
-    to   = module.runtime_connector.sym_integration.runtime_context  
+  from = sym_integration.runtime_context  
+  to   = module.runtime_connector.sym_integration.runtime_context  
 }
 ```
 ## New Output: `sym_runtime`
@@ -365,7 +365,7 @@ Optionally, you may choose to use `moved` configuration blocks to migrate your T
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
-    from = sym_runtime.this  
-    to   = module.runtime_connector.sym_runtime.this  
+  from = sym_runtime.this  
+  to   = module.runtime_connector.sym_runtime.this  
 }
 ```
