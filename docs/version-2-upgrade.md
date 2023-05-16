@@ -240,7 +240,7 @@ module "runtime_connector" {
 
 resource "aws_iam_role_policy_attachment" "iam_policy_attachment_example" {
   policy_arn = aws_iam_policy.example.arn
-  role       = module.runtime_connector.sym_runtime_connector_role
+  role       = module.runtime_connector.sym_runtime_connector_role.name
 }
 ```
 
@@ -300,7 +300,7 @@ resource "sym_secrets" "this" {
   name = "${var.environment}-secrets"
 
   settings = {
-    context_id = module.runtime_connector.sym_integration
+    context_id = module.runtime_connector.sym_integration.id
   }
 }
 ```
