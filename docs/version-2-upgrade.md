@@ -357,7 +357,7 @@ module "runtime_connector" {
 
 resource "sym_environment" "this" {
   name       = var.environment
-  runtime_id = module_runtime_connector.sym_runtime.id
+  runtime_id = module.runtime_connector.sym_runtime.id
 }
 ```
 
