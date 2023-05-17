@@ -7,7 +7,7 @@ description: |-
 
 # Runtime Connector Module Version 2 Upgrade Guide
 
-Version 2.0.0 of the Runtime Connector Module a major release and includes some changes that you will need to consider when upgrading. This guide is intended to help with that process.
+Version 2.0.0 of the Runtime Connector Module is a major release and includes some changes that you will need to consider when upgrading. This guide is intended to help with that process.
 
 Upgrade topics:
 
@@ -52,7 +52,7 @@ module "runtime_connector" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing AWS IAM Role and Policy with a new one:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing AWS IAM Role and Policy with a new one:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {
@@ -108,7 +108,7 @@ module "secrets_manager_access" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -156,7 +156,7 @@ module "kinesis_firehose_access" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -210,7 +210,7 @@ module "kinesis_data_stream_access" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -228,7 +228,7 @@ moved {
 This input is no longer supported, and the `external_id` of the AWS IAM Role declared by this module will always be a random UUID.
 
 ## Input `policy_arns` has been removed
-This input is no longer supported, and any additional AWS IAM Policies should be attached directly to the AWS IAM Role outputted by the module.
+This input is no longer supported, and any additional AWS IAM Policies should be attached directly to the AWS IAM Role output by the module.
 
 For example, given this previous configuration:
 ```terraform
@@ -319,7 +319,7 @@ resource "sym_secrets" "this" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
@@ -375,7 +375,7 @@ resource "sym_environment" "this" {
 }
 ```
 
-Optionally, you may choose to use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
+Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
