@@ -94,7 +94,8 @@ module "secrets_manager_access" {
 }
 ```
 
-Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -142,7 +143,8 @@ module "kinesis_firehose_access" {
 }
 ```
 
-Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -196,7 +198,8 @@ module "kinesis_data_stream_access" {
 }
 ```
 
-Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -304,7 +307,8 @@ resource "sym_secrets" "this" {
 }
 ```
 
-We recommend using `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
+We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
@@ -360,7 +364,8 @@ resource "sym_environment" "this" {
 }
 ```
 
-We recommend using `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
+We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
