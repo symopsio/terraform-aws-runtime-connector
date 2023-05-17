@@ -52,20 +52,6 @@ module "runtime_connector" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing AWS IAM Role and Policy with a new one:
-```terraform
-# The following blocks may be removed after applying the updated configuration
-moved {
-  from = module.runtime_connector.aws_iam_role.this
-  to   = module.runtime_connector.aws_iam_role.sym_runtime_connector_role
-}
-
-moved {
-  from = module.runtime_connector.aws_iam_role_policy_attachment.assume_roles_attach
-  to   = module.runtime_connector.aws_iam_role_policy_attachment.attach_assume_roles
-}
-```
-
 ## Removed Inputs: `addons` and `addon_params`
 The `addons` and `addon_params` inputs have been removed as of `runtime_connector` version 2.0.
 
@@ -108,7 +94,7 @@ module "secrets_manager_access" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -156,7 +142,7 @@ module "kinesis_firehose_access" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -166,7 +152,7 @@ moved {
   
 moved {  
   from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_firehose_attach[0]
-  to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.attach_firehose_access[0]  
+  to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.at tach_firehose_access[0]  
 }
 ```
 
@@ -210,7 +196,7 @@ module "kinesis_data_stream_access" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
+Optionally, we recommend using `moved` configuration blocks to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
 moved {  
@@ -269,8 +255,8 @@ data.aws_caller_identity.current.account_id
 The `settings` output has been superseded by the new `sym_integration` output.
 
 ## New Output: `sym_integration`
-Version 2.0.0 of the `runtime_connector` module now outputs a `sym_integration.runtime_context` by default. You may choose
-to use this integration instead of declaring one explicitly.
+Version 2.0.0 of the `runtime_connector` module now outputs a `sym_integration.runtime_context` by default. We recommend 
+using this integration instead of declaring one explicitly.
 
 For example, given this previous configuration:
 ```terraform
@@ -285,7 +271,6 @@ resource "sym_integration" "runtime_context" {
   type        = "permission_context"
   name        = "runtime-${var.environment}"
   external_id = module.runtime_connector.settings.account_id
-
 
   settings = module.runtime_connector.settings
 }
@@ -319,7 +304,7 @@ resource "sym_secrets" "this" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
+We recommend using `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
@@ -328,8 +313,8 @@ moved {
 }
 ```
 ## New Output: `sym_runtime`
-Version 2.0.0 of the `runtime_connector` module now outputs a `sym_runtime.this` by default. You may choose
-to use this resource instead of declaring one explicitly.
+Version 2.0.0 of the `runtime_connector` module now outputs a `sym_runtime.this` by default. We recommend using this 
+resource instead of declaring one explicitly.
 
 For example, given this previous configuration:
 ```terraform
@@ -375,7 +360,7 @@ resource "sym_environment" "this" {
 }
 ```
 
-Optionally, you may also use `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
+We recommend using `moved` configuration blocks to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
 ```terraform
 # This block may be removed after applying the updated configuration
 moved {  
