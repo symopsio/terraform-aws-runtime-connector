@@ -13,15 +13,15 @@ Upgrade topics:
 
 - [Runtime Connector Module Version 2 Upgrade Guide](#runtime-connector-module-version-2-upgrade-guide)
   - [Module Version Configuration](#module-version-configuration)
-  - [Removed Inputs: `addons` and `addon_params`](#removed-inputs-addons-and-addonparams)
+  - [Removed Inputs: `addons` and `addon_params`](#removed-inputs-addons-and-addon_params)
     - [Refactoring the `aws/secretsmgr` Addon](#refactoring-the-awssecretsmgr-addon) 
     - [Refactoring the `aws/kinesis-firehose` Addon](#refactoring-the-awskinesis-firehose-addon) 
     - [Refactoring the `aws/kinesis-data-stream` Addon](#refactoring-the-awskinesis-data-stream-addon) 
-  - [Removed Input: `custom_external_id`](#removed-input-customexternalid)
-  - [Removed Output: `account_id`](#removed-output-accountid)
+  - [Removed Input: `custom_external_id`](#removed-input-custom_external_id)
+  - [Removed Output: `account_id`](#removed-output-account_id)
   - [Removed Output: `settings`](#removed-output-settings)
-  - [New output: `sym_integration`](#new-output-symintegration)
-  - [New output: `sym_runtime`](#new-output-symruntime)
+  - [New output: `sym_integration`](#new-output-sym_integration)
+  - [New output: `sym_runtime`](#new-output-sym_runtime)
 
 ## Module Version Configuration
 Before upgrading to version 2.0.0 or later, it is recommended to upgrade to the most recent 1.X version of the module (version 1.0.6) 
