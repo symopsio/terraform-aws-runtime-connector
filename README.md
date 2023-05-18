@@ -18,7 +18,8 @@ module "runtime_connector" {
 
 ## Upgrading from Version 1.x to 2.x
 Several inputs and outputs have changed in the major version upgrade from 1.x to 2.x. 
-Please see the [Runtime Connector Module Version 2 Upgrade Guide](./docs/version-2-upgrade.md) for details and upgrade instructions.
+Please see the [Runtime Connector Module Version 2 Upgrade Guide](https://github.com/symopsio/terraform-aws-runtime-connector/blob/main/docs/version-2-upgrade.md) 
+for details and upgrade instructions.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
