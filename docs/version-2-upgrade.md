@@ -12,22 +12,33 @@ Version 2.0.0 of the Runtime Connector Module is a major release and includes so
 Upgrade topics:
 
 - [Runtime Connector Module Version 2 Upgrade Guide](#runtime-connector-module-version-2-upgrade-guide)
+  - [Why are we doing this?](#why-are-we-doing-this)
   - [Module Version Configuration](#module-version-configuration)
   - [Removed Inputs: `addons` and `addon_params`](#removed-inputs-addons-and-addon_params)
-    - [Refactoring the `aws/secretsmgr` Addon](#refactoring-the-awssecretsmgr-addon) 
-    - [Refactoring the `aws/kinesis-firehose` Addon](#refactoring-the-awskinesis-firehose-addon) 
-    - [Refactoring the `aws/kinesis-data-stream` Addon](#refactoring-the-awskinesis-data-stream-addon) 
+    - [Refactoring the `aws/secretsmgr` Addon](#refactoring-the-awssecretsmgr-addon)
+    - [Refactoring the `aws/kinesis-firehose` Addon](#refactoring-the-awskinesis-firehose-addon)
+    - [Refactoring the `aws/kinesis-data-stream` Addon](#refactoring-the-awskinesis-data-stream-addon)
   - [Removed Input: `custom_external_id`](#removed-input-custom_external_id)
+  - [Input `policy_arns` has been removed](#input-policy_arns-has-been-removed)
   - [Removed Output: `account_id`](#removed-output-account_id)
   - [Removed Output: `settings`](#removed-output-settings)
-  - [New output: `sym_integration`](#new-output-sym_integration)
-  - [New output: `sym_runtime`](#new-output-sym_runtime)
+  - [New Output: `sym_integration`](#new-output-sym_integration)
+  - [New Output: `sym_runtime`](#new-output-sym_runtime)
+
+## Why are we doing this?
+
+The easiest way to manage your Sym configuration is [via the CLI](https://docs.symops.com/docs/generating-sym-workflows). However, we understand that:
+- Generated code cannot cover all use cases
+- Some prefer to manage their Terraform manually
+- Configuration should still be easy to understand
+
+The changes made in this major release are intended to make usage of this module **consistent** across generated and manual configurations, while also **minimizing** the amount of Terraform code required to configure Sym manually. What this really means is that resources that have always depended on this module (like the `sym_integration` and `sym_runtime`) are now included, while functionality that is situational and may have its own set of configuration (access to AWS Secrets Manager or AWS Kinesis Firehose) has been removed in favor of explicit and separate module declarations.
 
 ## Module Version Configuration
-Before upgrading to version 2.0.0 or later, it is recommended to upgrade to the most recent 1.X version of the module (version 1.0.6) 
+Before upgrading to version 2.0.0 or later, it is recommended to upgrade to the most recent 1.X version of the module (version 1.0.6)
 and ensure that your environment successfully runs `terraform plan` without unexpected changes.
 
-It is recommended to use [version constraints when configuring Terraform providers](https://www.terraform.io/docs/configuration/providers.html#provider-versions). 
+It is recommended to use [version constraints when configuring Terraform providers](https://www.terraform.io/docs/configuration/providers.html#provider-versions).
 If you are following that recommendation, update the version constraints in your Terraform configuration and run [`terraform init -upgrade`](https://www.terraform.io/docs/commands/init.html) to download the new version.
 
 For example, given this previous configuration:
@@ -70,7 +81,7 @@ module "runtime_connector" {
   version = "~> 1.0"
 
   environment = var.environment
-  
+
   addons = ["aws/secretsmgr"]
 }
 ```
@@ -94,18 +105,18 @@ module "secrets_manager_access" {
 }
 ```
 
-Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
-moved {  
+moved {
   from = module.runtime_connector.module.aws_secretsmgr[0].aws_iam_policy.this
-  to   = module.secrets_manager_access.aws_iam_policy.this  
-}  
-  
-moved {  
+  to   = module.secrets_manager_access.aws_iam_policy.this
+}
+
+moved {
   from = module.runtime_connector.aws_iam_role_policy_attachment.aws_secretsmgr_attach[0]
-  to   = module.secrets_manager_access.aws_iam_role_policy_attachment.attach_secrets_manager_access[0]  
+  to   = module.secrets_manager_access.aws_iam_role_policy_attachment.attach_secrets_manager_access[0]
 }
 ```
 
@@ -119,7 +130,7 @@ module "runtime_connector" {
   version = "~> 1.0"
 
   environment = var.environment
-  
+
   addons = ["aws/kinesis-firehose"]
 }
 ```
@@ -143,18 +154,18 @@ module "kinesis_firehose_access" {
 }
 ```
 
-Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
-moved {  
+moved {
   from = module.runtime_connector.module.aws_kinesis_firehose[0].aws_iam_policy.this
-  to   = module.kinesis_firehose_access.aws_iam_policy.this  
-}  
-  
-moved {  
+  to   = module.kinesis_firehose_access.aws_iam_policy.this
+}
+
+moved {
   from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_firehose_attach[0]
-  to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.at tach_firehose_access[0]  
+  to   = module.kinesis_firehose_access.aws_iam_role_policy_attachment.at tach_firehose_access[0]
 }
 ```
 
@@ -168,7 +179,7 @@ module "runtime_connector" {
   version = "~> 1.0"
 
   environment = var.environment
-  
+
   addons       = ["aws/kinesis-data-stream"]
   addon_params = {
     "aws/kinesis-data-stream" = {
@@ -198,18 +209,18 @@ module "kinesis_data_stream_access" {
 }
 ```
 
-Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
 # The following blocks may be removed after applying the updated configuration
-moved {  
+moved {
   from = module.runtime_connector.module.aws_kinesis_data_stream[0].aws_iam_policy.this
-  to   = module.kinesis_data_stream_access.aws_iam_policy.this  
-}  
-  
-moved {  
+  to   = module.kinesis_data_stream_access.aws_iam_policy.this
+}
+
+moved {
   from = module.runtime_connector.aws_iam_role_policy_attachment.aws_kinesis_data_stream_attach[0]
-  to   = module.kinesis_data_stream_access.aws_iam_role_policy_attachment.attach_datastream_access[0]  
+  to   = module.kinesis_data_stream_access.aws_iam_role_policy_attachment.attach_datastream_access[0]
 }
 ```
 
@@ -226,7 +237,7 @@ module "runtime_connector" {
   version = "~> 1.0"
 
   environment = var.environment
-  
+
   policy_arns = [aws_iam_policy.example.arn]
 }
 ```
@@ -258,7 +269,7 @@ data.aws_caller_identity.current.account_id
 The `settings` output has been superseded by the new `sym_integration` output.
 
 ## New Output: `sym_integration`
-Version 2.0.0 of the `runtime_connector` module now outputs a `sym_integration.runtime_context` by default. We recommend 
+Version 2.0.0 of the `runtime_connector` module now outputs a `sym_integration.runtime_context` by default. We recommend
 using this integration instead of declaring one explicitly.
 
 For example, given this previous configuration:
@@ -267,7 +278,7 @@ module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
   version = "~> 1.0"
 
-  environment = var.environment  
+  environment = var.environment
 }
 
 resource "sym_integration" "runtime_context" {
@@ -294,7 +305,7 @@ module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
   version = "~> 1.0"
 
-  environment = var.environment  
+  environment = var.environment
 }
 
 resource "sym_secrets" "this" {
@@ -307,17 +318,17 @@ resource "sym_secrets" "this" {
 }
 ```
 
-We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
 ```terraform
 # This block may be removed after applying the updated configuration
-moved {  
-  from = sym_integration.runtime_context  
-  to   = module.runtime_connector.sym_integration.runtime_context  
+moved {
+  from = sym_integration.runtime_context
+  to   = module.runtime_connector.sym_integration.runtime_context
 }
 ```
 ## New Output: `sym_runtime`
-Version 2.0.0 of the `runtime_connector` module now outputs a `sym_runtime.this` by default. We recommend using this 
+Version 2.0.0 of the `runtime_connector` module now outputs a `sym_runtime.this` by default. We recommend using this
 resource instead of declaring one explicitly.
 
 For example, given this previous configuration:
@@ -326,7 +337,7 @@ module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
   version = "~> 1.0"
 
-  environment = var.environment  
+  environment = var.environment
 }
 
 resource "sym_integration" "runtime_context" {
@@ -355,7 +366,7 @@ module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
   version = "~> 1.0"
 
-  environment = var.environment  
+  environment = var.environment
 }
 
 resource "sym_environment" "this" {
@@ -364,12 +375,12 @@ resource "sym_environment" "this" {
 }
 ```
 
-We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax) 
+We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
 ```terraform
 # This block may be removed after applying the updated configuration
-moved {  
-  from = sym_runtime.this  
-  to   = module.runtime_connector.sym_runtime.this  
+moved {
+  from = sym_runtime.this
+  to   = module.runtime_connector.sym_runtime.this
 }
 ```
