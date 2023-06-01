@@ -37,22 +37,6 @@ resource "aws_iam_role" "sym_runtime_connector_role" {
             "sts:ExternalId" = random_uuid.external_id.result
           }
         }
-      },
-      # Allow for role self-assumption due to Sym engine internals.
-      # Initial provisioning of the role fails if we specify the role ARN as a
-      # resource, so using a PrincipalArn condition as suggested here:
-      # https://aws.amazon.com/premiumsupport/knowledge-center/iam-trust-policy-error/
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          AWS = ["*"] # This is constrained by the PrincipalArn condition to only the current role
-        }
-        Condition = {
-          StringEquals = {
-            "aws:PrincipalArn" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/sym/${local.role_name}"
-          }
-        }
       }
     ]
     Version = "2012-10-17"
