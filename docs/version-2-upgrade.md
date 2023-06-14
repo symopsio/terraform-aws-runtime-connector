@@ -108,6 +108,7 @@ module "secrets_manager_access" {
 Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
+# Note: These `moved` statements require terraform >= 1.3.0 (https://github.com/hashicorp/terraform/releases/tag/v1.3.0)
 # The following blocks may be removed after applying the updated configuration
 moved {
   from = module.runtime_connector.module.aws_secretsmgr[0].aws_iam_policy.this
@@ -157,6 +158,7 @@ module "kinesis_firehose_access" {
 Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
+# Note: These `moved` statements require terraform >= 1.3.0 (https://github.com/hashicorp/terraform/releases/tag/v1.3.0)
 # The following blocks may be removed after applying the updated configuration
 moved {
   from = module.runtime_connector.module.aws_kinesis_firehose[0].aws_iam_policy.this
@@ -212,6 +214,7 @@ module "kinesis_data_stream_access" {
 Optionally, we recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of replacing the existing IAM policies with new ones:
 ```terraform
+# Note: These `moved` statements require terraform >= 1.3.0 (https://github.com/hashicorp/terraform/releases/tag/v1.3.0)
 # The following blocks may be removed after applying the updated configuration
 moved {
   from = module.runtime_connector.module.aws_kinesis_data_stream[0].aws_iam_policy.this
@@ -303,7 +306,7 @@ An updated configuration would be:
 ```terraform
 module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   environment = var.environment
 }
@@ -321,6 +324,7 @@ resource "sym_secrets" "this" {
 We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of destroying and recreating your existing `sym_integration.runtime_context`:
 ```terraform
+# Note: This `moved` statement requires terraform >= 1.3.0 (https://github.com/hashicorp/terraform/releases/tag/v1.3.0)
 # This block may be removed after applying the updated configuration
 moved {
   from = sym_integration.runtime_context
@@ -364,7 +368,7 @@ An updated configuration would be:
 ```terraform
 module "runtime_connector" {
   source  = "symopsio/runtime-connector/aws"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   environment = var.environment
 }
@@ -378,6 +382,7 @@ resource "sym_environment" "this" {
 We recommend using [`moved` configuration blocks](https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#moved-block-syntax)
 to migrate your Terraform state, instead of destroying and recreating your existing `sym_runtime`:
 ```terraform
+# Note: This `moved` statement requires terraform >= 1.3.0 (https://github.com/hashicorp/terraform/releases/tag/v1.3.0)
 # This block may be removed after applying the updated configuration
 moved {
   from = sym_runtime.this
